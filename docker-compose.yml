@@ -5,11 +5,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8081:80"
     depends_on:
       - postgres
-    networks:
-      - app
   postgres:
     image: postgres
     restart: always
@@ -29,9 +27,5 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - app
 
-networks:
-  app:
 
