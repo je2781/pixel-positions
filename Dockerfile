@@ -1,4 +1,4 @@
-FROM ubuntu:latest AS base
+FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -22,13 +22,13 @@ RUN apt install -y php8.2\
     php8.2-curl\
     php8.2-xml\
     php8.2-bcmath\
-    php8.2-pdo
+    php8.2-pdo \
+    curl \
+    netcat-openbsd
+
 
 
 # Install composer
-RUN apt install -y curl
-RUN apt install -y netcat-openbsd
-
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Create necessary directories for Supervisor
