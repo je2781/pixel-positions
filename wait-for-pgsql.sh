@@ -17,4 +17,14 @@ php artisan migrate:fresh
 echo "Running seeders..."
 php artisan db:seed
 
-exec "$@"
+echo "Postgres is up. Starting services..."
+
+# Start PHP-FPM
+service php8.2-fpm start
+
+# Start Nginx in background
+nginx -g "daemon off;" &
+
+# Clean up Supervisor socket and start Supervisor
+rm -f /run/supervisord.sock
+exec /usr/bin/supervisord -c /etc/supervisord.conf

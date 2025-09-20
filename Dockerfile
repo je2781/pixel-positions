@@ -2,8 +2,6 @@ FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY wait-for-pgsql.sh /usr/local/bin/wait-for-pgsql.sh
-
 # Install dependencies
 RUN apt update
 RUN apt install -y software-properties-common
@@ -71,16 +69,6 @@ RUN echo "\
     }\n" > /etc/nginx/sites-available/default
 
 
-RUN echo "\
-    #!/bin/sh\n\
-    echo \"Starting services...\"\n\
-    service php8.2-fpm start\n\
-    nginx -g \"daemon off;\" &\n\
-    echo \"Cleaning up stale Supervisor socket...\"\n\
-    rm -f /run/supervisord.sock\n\
-    echo \"Starting supervisord...\"\n\
-    exec /usr/bin/supervisord -c /etc/supervisord.conf\n\
-    " > chmod +x /usr/local/bin/wait-for-pgsql.sh
 
 WORKDIR /var/www/html
 
@@ -108,4 +96,10 @@ RUN composer install
 
 EXPOSE 80
 
+# Copy wait script
+COPY wait-for-pgsql.sh /usr/local/bin/wait-for-pgsql.sh
+RUN chmod +x /usr/local/bin/wait-for-pgsql.sh
+
+
 CMD ["sh", "/usr/local/bin/wait-for-pgsql.sh"]
+
