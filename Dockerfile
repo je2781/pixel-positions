@@ -80,7 +80,7 @@ RUN echo "\
     rm -f /run/supervisord.sock\n\
     echo \"Starting supervisord...\"\n\
     exec /usr/bin/supervisord -c /etc/supervisord.conf\n\
-    " > /wait-for-pgsql.sh && chmod +x /wait-for-pgsql.sh
+    " > chmod +x /usr/local/bin/wait-for-pgsql.sh
 
 WORKDIR /var/www/html
 
@@ -99,8 +99,6 @@ RUN npm run build
 #giving permissions
 RUN chown -R www-data:www-data /var/www/html /var/www/html/storage /var/www/html/bootstrap/
 
-#waiting for db to be connected
-RUN chmod +x /usr/local/bin/wait-for-pgsql.sh
 
 # Copy Supervisor config files
 COPY supervisord.conf /etc/supervisord.conf
@@ -110,6 +108,4 @@ RUN composer install
 
 EXPOSE 80
 
-ENTRYPOINT ["/usr/local/bin/wait-for-pgsql.sh"]
-
-CMD ["sh", "/wait-for-pgsql.sh"]
+CMD ["sh", "/usr/local/bin/wait-for-pgsql.sh"]
